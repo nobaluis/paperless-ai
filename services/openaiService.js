@@ -173,7 +173,12 @@ class OpenAIService {
 
       const truncatedContent = await truncateToTokenLimit(content, availableTokens, model);
 
-      await writePromptToFile(systemPrompt, truncatedContent);
+      // Append Qwen slash command if configured
+      const finalContent = config.qwenSlashCommand
+        ? `${truncatedContent}\n${config.qwenSlashCommand}`
+        : truncatedContent;
+
+      await writePromptToFile(systemPrompt, finalContent);
 
       const response = await this.client.chat.completions.create({
         model: model,
@@ -184,7 +189,7 @@ class OpenAIService {
           },
           {
             role: "user",
-            content: truncatedContent
+            content: finalContent
           }
         ],
         ...(model !== 'o3-mini' && { temperature: 0.3 }),
