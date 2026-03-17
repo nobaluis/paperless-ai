@@ -3618,7 +3618,8 @@ router.post('/setup', express.json(), async (req, res) => {
       azureEndpoint,
       azureApiKey,
       azureDeploymentName,
-      azureApiVersion
+      azureApiVersion,
+      qwenSlashCommand
     } = req.body;
 
     // Log setup request with sensitive data redacted
@@ -3740,9 +3741,10 @@ router.post('/setup', express.json(), async (req, res) => {
       AZURE_ENDPOINT: azureEndpoint || '',
       AZURE_API_KEY: azureApiKey || '',
       AZURE_DEPLOYMENT_NAME: azureDeploymentName || '',
-      AZURE_API_VERSION: azureApiVersion || ''
+      AZURE_API_VERSION: azureApiVersion || '',
+      QWEN_SLASH_COMMAND: qwenSlashCommand || ''
     };
-    
+
     // Validate AI provider config
     if (aiProvider === 'openai') {
       const isOpenAIValid = await setupService.validateOpenAIConfig(openaiKey);
@@ -4025,7 +4027,8 @@ router.post('/settings', express.json(), async (req, res) => {
       azureEndpoint,
       azureApiKey,
       azureDeploymentName,
-      azureApiVersion
+      azureApiVersion,
+      qwenSlashCommand
     } = req.body;
 
     //replace equal char in system prompt
@@ -4069,6 +4072,7 @@ router.post('/settings', express.json(), async (req, res) => {
       AZURE_API_KEY: process.env.AZURE_API_KEY || '',
       AZURE_DEPLOYMENT_NAME: process.env.AZURE_DEPLOYMENT_NAME || '',
       AZURE_API_VERSION: process.env.AZURE_API_VERSION || '',
+      QWEN_SLASH_COMMAND: process.env.QWEN_SLASH_COMMAND || '',
       RESTRICT_TO_EXISTING_TAGS: process.env.RESTRICT_TO_EXISTING_TAGS || 'no',
       RESTRICT_TO_EXISTING_CORRESPONDENTS: process.env.RESTRICT_TO_EXISTING_CORRESPONDENTS || 'no',
       RESTRICT_TO_EXISTING_DOCUMENT_TYPES: process.env.RESTRICT_TO_EXISTING_DOCUMENT_TYPES || 'no',
@@ -4201,6 +4205,7 @@ router.post('/settings', express.json(), async (req, res) => {
     if (customBaseUrl) updatedConfig.CUSTOM_BASE_URL = customBaseUrl;
     if (customModel) updatedConfig.CUSTOM_MODEL = customModel;
     if (disableAutomaticProcessing) updatedConfig.DISABLE_AUTOMATIC_PROCESSING = disableAutomaticProcessing;
+    if (qwenSlashCommand !== undefined) updatedConfig.QWEN_SLASH_COMMAND = qwenSlashCommand || '';
 
     // Update custom fields
     if (processedCustomFields.length > 0 || customFields) {

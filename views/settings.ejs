@@ -411,6 +411,19 @@
                                     </div>
                                 </div>
 
+                                <!-- Qwen Slash Command Settings -->
+                                <div class="space-y-2">
+                                    <label for="qwenSlashCommand" class="text-sm font-medium">Qwen Slash Command</label>
+                                    <select id="qwenSlashCommand"
+                                            name="qwenSlashCommand"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                        <option value="" <%= !config.QWEN_SLASH_COMMAND || config.QWEN_SLASH_COMMAND === '' ? 'selected' : '' %>>None (disabled)</option>
+                                        <option value="/think" <%= config.QWEN_SLASH_COMMAND === '/think' ? 'selected' : '' %>>/think (Enable extended thinking)</option>
+                                        <option value="/no_think" <%= config.QWEN_SLASH_COMMAND === '/no_think' ? 'selected' : '' %>>/no_think (Disable thinking, faster responses)</option>
+                                    </select>
+                                    <p class="text-xs text-gray-500">For Qwen3 models only. Appended to the user message to control reasoning mode.</p>
+                                </div>
+
                                 <!-- Token Limit Field -->
                                 <div class="space-y-2">
                                     <label for="tokenLimit">Token Limit</label>

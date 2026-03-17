@@ -165,6 +165,11 @@ class CustomOpenAIService {
 
       const truncatedContent = await truncateToTokenLimit(content, availableTokens, model);
 
+      // Append Qwen slash command if configured
+      const finalContent = config.qwenSlashCommand
+        ? `${truncatedContent}\n${config.qwenSlashCommand}`
+        : truncatedContent;
+
       // console.log('######################################################################');
       // console.log(`[DEBUG] Content length: ${content.length}, Truncated content length: ${truncatedContent.length}`);
       // console.log(`[DEBUG] Truncated content: ${truncatedContent}`);
@@ -188,7 +193,7 @@ class CustomOpenAIService {
           },
           {
             role: "user",
-            content: truncatedContent
+            content: finalContent
           }
         ],
         temperature: 0.3,

@@ -90,6 +90,7 @@ module.exports = {
   },
   customFields: process.env.CUSTOM_FIELDS || '',
   aiProvider: process.env.AI_PROVIDER || 'openai',
+  qwenSlashCommand: process.env.QWEN_SLASH_COMMAND || '',
   scanInterval: process.env.SCAN_INTERVAL || '*/30 * * * *',
   useExistingData: process.env.USE_EXISTING_DATA || 'no',
   // Add limit functions to config
