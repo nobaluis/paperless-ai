@@ -1,8 +1,7 @@
 services:
   paperless-ai:
-    image: nobaluis/paperless-ai
+    image: nobaluis/paperless-ai:latest
     container_name: paperless-ai
-    network_mode: bridge
     restart: unless-stopped
     cap_drop:
       - ALL
@@ -12,10 +11,23 @@ services:
       - PUID=1000
       - PGID=1000
       - PAPERLESS_AI_PORT=${PAPERLESS_AI_PORT:-3000}
-      - RAG_SERVICE_URL=http://localhost:8000
+      - RAG_SERVICE_URL=http://rag:8000
       - RAG_SERVICE_ENABLED=true
     ports:
-      - "3000:${PAPERLESS_AI_PORT:-3000}"
+      - "${PAPERLESS_AI_PORT:-3000}:3000"
+    volumes:
+      - paperless-ai_data:/app/data
+    depends_on:
+      - rag
+
+  rag:
+    image: nobaluis/paperless-ai:rag-intel
+    container_name: paperless-ai-rag
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    devices:
+      - /dev/dri:/dev/dri
     volumes:
       - paperless-ai_data:/app/data
 
