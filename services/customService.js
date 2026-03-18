@@ -27,6 +27,13 @@ class CustomOpenAIService {
     }
   }
 
+  _stripThinkingProcess(content) {
+    if (!content) return content;
+    // Regex matches <think> followed by any character (including newlines)
+    // until the closing </think>, plus any trailing whitespace/newlines
+    return content.replace(/^<think>[\s\S]*?<\/think>\s*/, '');
+  }
+
   async analyzeDocument(content, existingTags = [], existingCorrespondentList = [], existingDocumentTypesList = [], id, customPrompt = null, options = {}) {
     const cachePath = path.join('./public/images', `${id}.png`);
     try {
@@ -165,11 +172,6 @@ class CustomOpenAIService {
 
       const truncatedContent = await truncateToTokenLimit(content, availableTokens, model);
 
-      // Append Qwen slash command if configured
-      const finalContent = config.qwenSlashCommand
-        ? `${truncatedContent}\n${config.qwenSlashCommand}`
-        : truncatedContent;
-
       // console.log('######################################################################');
       // console.log(`[DEBUG] Content length: ${content.length}, Truncated content length: ${truncatedContent.length}`);
       // console.log(`[DEBUG] Truncated content: ${truncatedContent}`);
@@ -193,7 +195,7 @@ class CustomOpenAIService {
           },
           {
             role: "user",
-            content: finalContent
+            content: truncatedContent
           }
         ],
         temperature: 0.3,
@@ -216,7 +218,12 @@ class CustomOpenAIService {
         totalTokens: usage.total_tokens
       };
 
-      let jsonContent = response.choices[0].message.content;
+      const responseContent = response.choices[0].message.content;
+
+      let jsonContent = config.customThinkingModel === 'yes'
+          ? this._stripThinkingProcess(responseContent)
+          : responseContent;
+
       jsonContent = jsonContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
 
       let parsedResponse;

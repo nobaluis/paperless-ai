@@ -164,12 +164,7 @@ class AzureOpenAIService {
 
       const truncatedContent = await truncateToTokenLimit(content, availableTokens, model);
 
-      // Append Qwen slash command if configured
-      const finalContent = config.qwenSlashCommand
-        ? `${truncatedContent}\n${config.qwenSlashCommand}`
-        : truncatedContent;
-
-      await writePromptToFile(systemPrompt, finalContent);
+      await writePromptToFile(systemPrompt, truncatedContent);
 
       const response = await this.client.chat.completions.create({
         model: model,
@@ -180,7 +175,7 @@ class AzureOpenAIService {
           },
           {
             role: "user",
-            content: finalContent
+            content: truncatedContent
           }
         ],
         temperature: 0.3,

@@ -3619,7 +3619,7 @@ router.post('/setup', express.json(), async (req, res) => {
       azureApiKey,
       azureDeploymentName,
       azureApiVersion,
-      qwenSlashCommand
+      customThinkingModel
     } = req.body;
 
     // Log setup request with sensitive data redacted
@@ -3728,6 +3728,7 @@ router.post('/setup', express.json(), async (req, res) => {
       CUSTOM_API_KEY: customApiKey || '',
       CUSTOM_BASE_URL: customBaseUrl || '',
       CUSTOM_MODEL: customModel || '',
+      CUSTOM_THINKING_MODEL: customThinkingModel ? 'yes' : 'no',
       PAPERLESS_AI_INITIAL_SETUP: 'yes',
       ACTIVATE_TAGGING: activateTagging ? 'yes' : 'no',
       ACTIVATE_CORRESPONDENTS: activateCorrespondents ? 'yes' : 'no',
@@ -3741,8 +3742,7 @@ router.post('/setup', express.json(), async (req, res) => {
       AZURE_ENDPOINT: azureEndpoint || '',
       AZURE_API_KEY: azureApiKey || '',
       AZURE_DEPLOYMENT_NAME: azureDeploymentName || '',
-      AZURE_API_VERSION: azureApiVersion || '',
-      QWEN_SLASH_COMMAND: qwenSlashCommand || ''
+      AZURE_API_VERSION: azureApiVersion || ''
     };
 
     // Validate AI provider config
@@ -4028,7 +4028,7 @@ router.post('/settings', express.json(), async (req, res) => {
       azureApiKey,
       azureDeploymentName,
       azureApiVersion,
-      qwenSlashCommand
+      customThinkingModel
     } = req.body;
 
     //replace equal char in system prompt
@@ -4061,6 +4061,7 @@ router.post('/settings', express.json(), async (req, res) => {
       CUSTOM_API_KEY: process.env.CUSTOM_API_KEY || '',
       CUSTOM_BASE_URL: process.env.CUSTOM_BASE_URL || '',
       CUSTOM_MODEL: process.env.CUSTOM_MODEL || '',
+      CUSTOM_THINKING_MODEL: process.env.CUSTOM_THINKING_MODEL || 'no',
       ACTIVATE_TAGGING: process.env.ACTIVATE_TAGGING || 'yes',
       ACTIVATE_CORRESPONDENTS: process.env.ACTIVATE_CORRESPONDENTS || 'yes',
       ACTIVATE_DOCUMENT_TYPE: process.env.ACTIVATE_DOCUMENT_TYPE || 'yes',
@@ -4072,7 +4073,6 @@ router.post('/settings', express.json(), async (req, res) => {
       AZURE_API_KEY: process.env.AZURE_API_KEY || '',
       AZURE_DEPLOYMENT_NAME: process.env.AZURE_DEPLOYMENT_NAME || '',
       AZURE_API_VERSION: process.env.AZURE_API_VERSION || '',
-      QWEN_SLASH_COMMAND: process.env.QWEN_SLASH_COMMAND || '',
       RESTRICT_TO_EXISTING_TAGS: process.env.RESTRICT_TO_EXISTING_TAGS || 'no',
       RESTRICT_TO_EXISTING_CORRESPONDENTS: process.env.RESTRICT_TO_EXISTING_CORRESPONDENTS || 'no',
       RESTRICT_TO_EXISTING_DOCUMENT_TYPES: process.env.RESTRICT_TO_EXISTING_DOCUMENT_TYPES || 'no',
@@ -4204,8 +4204,8 @@ router.post('/settings', express.json(), async (req, res) => {
     if (customApiKey) updatedConfig.CUSTOM_API_KEY = customApiKey;
     if (customBaseUrl) updatedConfig.CUSTOM_BASE_URL = customBaseUrl;
     if (customModel) updatedConfig.CUSTOM_MODEL = customModel;
+    if (customThinkingModel) updatedConfig.CUSTOM_THINKING_MODEL = customThinkingModel;
     if (disableAutomaticProcessing) updatedConfig.DISABLE_AUTOMATIC_PROCESSING = disableAutomaticProcessing;
-    if (qwenSlashCommand !== undefined) updatedConfig.QWEN_SLASH_COMMAND = qwenSlashCommand || '';
 
     // Update custom fields
     if (processedCustomFields.length > 0 || customFields) {

@@ -128,11 +128,6 @@ class OllamaService {
                 console.log('[DEBUG] Ollama Service started with custom prompt');
             }
 
-            // Append Qwen slash command if configured
-            if (config.qwenSlashCommand) {
-                prompt += '\n' + config.qwenSlashCommand;
-            }
-
             // Generate custom fields for the prompt
             const customFieldsStr = this._generateCustomFieldsTemplate();
 
