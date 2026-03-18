@@ -1,6 +1,6 @@
 services:
   paperless-ai:
-    image: clusterzx/paperless-ai
+    image: nobaluis/paperless-ai
     container_name: paperless-ai
     network_mode: bridge
     restart: unless-stopped

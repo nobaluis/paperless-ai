@@ -1,25 +1,34 @@
 #!/bin/bash
-# start-services.sh - Script to start both Node.js and Python services
+# start-services.sh - Clean shutdown version
 
-# Activate virtual environment for Python
+# Function to handle cleanup
+cleanup() {
+    echo "Shutting down services..."
+    kill "$PYTHON_PID"
+    exit 0
+}
+
+# Trap SIGTERM and SIGINT to run the cleanup function
+trap cleanup SIGTERM SIGINT
+
+# Activate virtual environment
 source /app/venv/bin/activate
 
-# Start the Python RAG service in the background
+# Start Python RAG service
 echo "Starting Python RAG service..."
+# Note: Using 127.0.0.1 is perfect for internal container comms
 python main.py --host 127.0.0.1 --port 8000 --initialize &
 PYTHON_PID=$!
 
-# Give it a moment to initialize
+# Wait for Python to be ready
 sleep 2
 echo "Python RAG service started with PID: $PYTHON_PID"
 
-# Set environment variables for the Node.js service
-export RAG_SERVICE_URL="http://localhost:8000"
-export RAG_SERVICE_ENABLED="true"
-
-# Start the Node.js application
+# Start Node.js via PM2
 echo "Starting Node.js Paperless-AI service..."
-pm2-runtime ecosystem.config.js
+# We use & to run PM2 in the background so the script can stay alive to catch signals
+pm2-runtime ecosystem.config.js &
+PM2_PID=$!
 
-# If Node.js exits, kill the Python service
-kill $PYTHON_PID
+# Wait for the processes
+wait "$PM2_PID"
